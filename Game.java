@@ -5,12 +5,12 @@ import java.util.*;
 class SharedData {
 	public int numberOfPlayers;
 	public boolean isGameComplete;
-	public Object lock;
 	public boolean[] playerChance;
 	public boolean[] hasPlayerWon;
 	public boolean play = false;
 	public int currentNumber;// the only thing that is visible to the user.
-
+	public Object lock;
+	
 	public SharedData(int n) 
 	{
 		this.numberOfPlayers = n;
@@ -43,22 +43,7 @@ class Moderator implements Runnable {
 		return ((rand.nextInt(hi - lo + 1)) + lo);
 	}
 
-	//Function for sending the thread to sleep at the correct time in a synchronized manner
-	@SuppressWarnings("unused")
-	private synchronized void displayNumber() 
-	{
-		sharedData.lock.notifyAll();// notify all the other threads
-		// send this thread to sleep
-		try 
-		{
-			Thread.sleep(100*this.timeToWait);
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-	}
-
+	
 	// multi - threading logic for moderator
 	public void run() 
 	{
@@ -254,8 +239,7 @@ public class Game {
 	public static void main(String[] args) 
 	{
 		System.out.println("Enter the number of Players who will play the game");
-		try (Scanner read = new Scanner(System.in)) 
-		{
+		
 			int n = read.nextInt();
 			// initialize players
 			SharedData gameDetails = new SharedData(n);
@@ -275,11 +259,7 @@ public class Game {
 			{
 				playerThread[i].start();
 			}
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
+		
 	}
 }
 /*
